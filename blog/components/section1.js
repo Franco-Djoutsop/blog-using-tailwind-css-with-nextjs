@@ -6,8 +6,14 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import SwiperCore, {Autoplay} from 'swiper';
+import fetcher from '@/lib/fetcher'
+import Spinner from './_child/spinner'
+import Error from './_child/error'
 
 export default function section1(){
+    const {data, isLoading, isError} = fetcher('api/trending')
+    if(isLoading) return <Spinner></Spinner>
+    if(isError) return <Error></Error>
 
     SwiperCore.use([Autoplay])
     const bg = {
@@ -22,97 +28,38 @@ export default function section1(){
                 <Swiper
                     slidesPerView={1}
                     autoplay={
-                        {delay:2000}
+                        {delay:3000}
                     }
                     loop={true}
-                    zoom={true}
                     >
-                    <SwiperSlide>{Slide()}</SwiperSlide>
-                    <SwiperSlide>{Slide2()}</SwiperSlide>
-                    <SwiperSlide>{Slide3()}</SwiperSlide>
-                    <SwiperSlide>{Slide4()}</SwiperSlide>
+                    {
+                        data.map((value, index)=>(
+                            <SwiperSlide key={index}><Slide data={value}></Slide></SwiperSlide>
+                        ))
+                    }
                 </Swiper>
             </div>
         </section>
     )
 }
 
-function Slide(){
+function Slide({data}){
+    const {id,category,title,img,published,author, description}=data
     return(
         <div className="grid md:grid-cols-2 gap-x-10">
             <div className="image">
-                <Link href="/"><Image src={"/images/img1.jpg"}  width={600} height={600} /></Link>
+                <Link href={`/posts/${id}`}><Image src={img || "/"}  width={600} height={600} /></Link>
             </div>
             <div className="info flex justify-center flex-col">
                 <div className="cat">
-                    <Link className="text-orange-600 hover:text-orange-800" href="/">Business, Travel</Link>
-                    <Link className="text-gray-800 hover:text-gray-600" href="/">-May 2023</Link>
+                    <Link className="text-orange-600 hover:text-orange-800" href={`/posts/${id}`}>{category || 'Unknown'}</Link>
+                    <Link className="text-gray-800 hover:text-gray-600" href={`/posts/${id}`}>-{published || "Unknown"}</Link>
                 </div>
                 <div className="title">
-                    <Link className="text-3xl md:text-4xl font-bold text-gray-800 hover:text-gray-600" href="/">Enim proident proident Lorem nulla aliquip sunt laboris. </Link>
+                    <Link className="text-3xl md:text-4xl font-bold text-gray-800 hover:text-gray-600" href={`/posts/${id}`}>{title} </Link>
                 </div>
-                <p className="text-gray-500 py-3 ">laborum eu aliquip ea est do esse sit aute ad consequat culpa sed Excepteur deserunt deserunt.non sint esse aute proident non ullamco fugiat incididunt cillum cillum amet Excepteur consectetur Excepteur Excepteur et. labore ipsum labore cillum sint sed occaecat tempor est aute amet commodo eu adipiscing est sed aliqua sunt.</p>
-                <Author></Author>
-            </div>
-        </div>
-    )
-}
-function Slide2(){
-    return(
-        <div className="grid md:grid-cols-2 gap-x-10">
-            <div className="image">
-                <Link href="/"><Image src={"/images/img2.jpg"}  width={600} height={600} /></Link>
-            </div>
-            <div className="info flex justify-center flex-col">
-                <div className="cat">
-                    <Link className="text-orange-600 hover:text-orange-800" href="/">Business, Travel</Link>
-                    <Link className="text-gray-800 hover:text-gray-600" href="/">-May 2023</Link>
-                </div>
-                <div className="title">
-                    <Link className="text-3xl md:text-4xl font-bold text-gray-800 hover:text-gray-600" href="/">Enim proident proident Lorem nulla aliquip sunt laboris. </Link>
-                </div>
-                <p className="text-gray-500 py-3 ">laborum eu aliquip ea est do esse sit aute ad consequat culpa sed Excepteur deserunt deserunt.non sint esse aute proident non ullamco fugiat incididunt cillum cillum amet Excepteur consectetur Excepteur Excepteur et. labore ipsum labore cillum sint sed occaecat tempor est aute amet commodo eu adipiscing est sed aliqua sunt.</p>
-                <Author></Author>
-            </div>
-        </div>
-    )
-}
-function Slide3(){
-    return(
-        <div className="grid md:grid-cols-2 gap-x-10">
-            <div className="image">
-                <Link href="/"><Image src={"/images/img3.png"}  width={600} height={600} /></Link>
-            </div>
-            <div className="info flex justify-center flex-col">
-                <div className="cat">
-                    <Link className="text-orange-600 hover:text-orange-800" href="/">Business, Travel</Link>
-                    <Link className="text-gray-800 hover:text-gray-600" href="/">-May 2023</Link>
-                </div>
-                <div className="title">
-                    <Link className="text-3xl md:text-4xl font-bold text-gray-800 hover:text-gray-600" href="/">Enim proident proident Lorem nulla aliquip sunt laboris. </Link>
-                </div>
-                <p className="text-gray-500 py-3 ">laborum eu aliquip ea est do esse sit aute ad consequat culpa sed Excepteur deserunt deserunt.non sint esse aute proident non ullamco fugiat incididunt cillum cillum amet Excepteur consectetur Excepteur Excepteur et. labore ipsum labore cillum sint sed occaecat tempor est aute amet commodo eu adipiscing est sed aliqua sunt.</p>
-                <Author></Author>
-            </div>
-        </div>
-    )
-}
-function Slide4(){
-    return(
-        <div className="grid md:grid-cols-2 gap-x-10">
-            <div className="image">
-                <Link href="/"><Image src={"/images/img4.png"}  width={600} height={600} /></Link>
-            </div>
-            <div className="info flex justify-center flex-col">
-                <div className="cat">
-                    <Link className="text-orange-600 hover:text-orange-800" href="/">Business, Travel</Link>
-                    <Link className="text-gray-800 hover:text-gray-600" href="/">-May 2023</Link>
-                </div>
-                <div className="title">
-                    <Link className="text-3xl md:text-4xl font-bold text-gray-800 hover:text-gray-600" href="/">Enim proident proident Lorem nulla aliquip sunt laboris. </Link>
-                </div>
-                <p className="text-gray-500 py-3 ">laborum eu aliquip ea est do esse sit aute ad consequat culpa sed Excepteur deserunt deserunt.non sint esse aute proident non ullamco fugiat incididunt cillum cillum amet Excepteur consectetur Excepteur Excepteur et. labore ipsum labore cillum sint sed occaecat tempor est aute amet commodo eu adipiscing est sed aliqua sunt.</p>
-                <Author></Author>
+                <p className="text-gray-500 py-3 ">{description || "description"}</p>
+                {author? <Author {...author}></Author> : <></>}
             </div>
         </div>
     )
